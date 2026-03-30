@@ -2,17 +2,21 @@
 title Finances App
 echo Inicializando Gerenciador Financeiro...
 
-:: Iniciar Backend em segundo plano (minimizado)
+:: Iniciar Backend em segundo plano
 start /min cmd /c "cd backend && mvnw spring-boot:run"
 
-:: Iniciar Frontend em segundo plano (minimizado)
+:: Iniciar Frontend em segundo plano
 start /min cmd /c "cd frontend && npm run dev"
 
-echo Aguardando inicializacao...
-timeout /t 5 /nobreak > nul
+echo Aguardando o banco de dados carregar...
+:wait_loop
+timeout /t 1 > nul
+curl -s http://localhost:8080/api/transactions > nul
+if %errorlevel% neq 0 (
+    echo Servidor ainda carregando...
+    goto wait_loop
+)
 
-:: Abrir o navegador no endereço do Frontend
+echo Banco de dados pronto! Abrindo Finances...
 start http://localhost:5173
-
-echo Aplicacao Pronta! Voce pode fechar esta janela se desejar.
 exit
