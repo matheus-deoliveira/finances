@@ -1,23 +1,34 @@
 Set WshShell = CreateObject("WScript.Shell")
 
-' Inicia o Backend de forma invisível
-WshShell.Run "cmd /c cd backend && mvnw.cmd spring-boot:run", 0, false
-
-' Inicia o Frontend de forma invisível
-WshShell.Run "cmd /c cd frontend && npm run dev", 0, false
-
-' Loop para aguardar o backend estar pronto (Health Check)
-ready = false
-Do While ready = false
+' Função para verificar se a porta do servidor está ativa
+Function IsServerRunning(url)
     On Error Resume Next
     Set xmlHttp = CreateObject("MSXML2.ServerXMLHTTP")
-    xmlHttp.Open "GET", "http://localhost:8080/api/transactions", False
+    xmlHttp.Open "GET", url, False
     xmlHttp.Send
-    If xmlHttp.Status = 200 Then
-        ready = true
+    If Err.Number = 0 Then
+        IsServerRunning = (xmlHttp.Status = 200)
+    Else
+        IsServerRunning = False
     End If
-    WScript.Sleep 1000 ' Espera 1 segundo antes de tentar de novo
-Loop
+    On Error GoTo 0
+End Function
 
-' Abre o navegador apenas quando o banco responder
+' Verifica se o backend já está rodando
+If Not IsServerRunning("http://localhost:8080/api/transactions") Then
+    ' Se NÃO estiver rodando, inicia tudo
+    WshShell.Run "cmd /c cd backend && mvnw.cmd spring-boot:run", 0, false
+    WshShell.Run "cmd /c cd frontend && npm run dev", 0, false
+    
+    ' Aguarda o banco de dados estar pronto
+    ready = false
+    Do While ready = false
+        WScript.Sleep 1000
+        If IsServerRunning("http://localhost:8080/api/transactions") Then
+            ready = true
+        End If
+    Loop
+End If
+
+' Se já estiver rodando ou acabou de ligar, apenas abre o navegador
 WshShell.Run "http://localhost:5173"
