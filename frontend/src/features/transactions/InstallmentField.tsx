@@ -1,12 +1,13 @@
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import { Input } from '../../shared/ui/Input';
+import { PaymentTypeEnum } from '../../entities/transaction/types';
 
 export const InstallmentField = () => {
   const { register, watch, formState: { errors } } = useFormContext();
   const paymentType = watch('paymentType');
 
-  if (paymentType !== 'INSTALLMENT') {
+  if (paymentType !== PaymentTypeEnum.INSTALLMENT && paymentType !== PaymentTypeEnum.INSTALLMENT_PIX) {
     return null;
   }
 

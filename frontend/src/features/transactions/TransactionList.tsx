@@ -6,10 +6,11 @@ import { Modal } from '../../shared/ui/Modal';
 import { Button } from '../../shared/ui/Button';
 import { transactionService } from '../../shared/api/transactions';
 import { formatCurrency, formatDate } from '../../shared/utils/format';
-import { ArrowDownRight, ArrowUpRight, Calendar, Tag, AlertTriangle, Repeat, Layers } from 'lucide-react';
+import { ArrowDownRight, ArrowUpRight, Calendar, Tag, AlertTriangle, Repeat, Layers, QrCode } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { TransactionForm } from './TransactionForm';
 import type { Transaction } from '../../entities/transaction/types';
+import { PaymentTypeEnum } from '../../entities/transaction/types';
 
 interface TransactionListProps {
   transactions: Transaction[]; 
@@ -63,13 +64,23 @@ export const TransactionList: React.FC<TransactionListProps> = ({ transactions }
                     <h4 className="font-bold text-[#0F0F0F] text-base leading-tight">
                       {transaction.description}
                     </h4>
-                    {transaction.paymentType === 'RECURRING' && (
+                    {transaction.paymentType === PaymentTypeEnum.RECURRING && (
                       <Repeat size={14} className="text-blue-500" title="Recorrente" />
                     )}
-                    {transaction.paymentType === 'INSTALLMENT' && (
+                    {transaction.paymentType === PaymentTypeEnum.INSTALLMENT && (
                       <div className="flex items-center gap-1 px-1.5 py-0.5 bg-gray-100 rounded text-[10px] font-black text-gray-500 uppercase tracking-tighter">
                         <Layers size={10} />
-                        {transaction.metadata?.currentInstallment}/{transaction.metadata?.totalInstallments}
+                        <span>Cartão</span>
+                        <span className="font-mono text-gray-400 mx-0.5">|</span>
+                        <span>{transaction.metadata?.currentInstallment}/{transaction.metadata?.totalInstallments}</span>
+                      </div>
+                    )}
+                    {transaction.paymentType === PaymentTypeEnum.INSTALLMENT_PIX && (
+                      <div className="flex items-center gap-1 px-1.5 py-0.5 bg-blue-100 rounded text-[10px] font-black text-blue-600 uppercase tracking-tighter">
+                        <QrCode size={10} />
+                        <span>PIX</span>
+                        <span className="font-mono text-blue-400 mx-0.5">|</span>
+                        <span>{transaction.metadata?.currentInstallment}/{transaction.metadata?.totalInstallments}</span>
                       </div>
                     )}
                   </div>

@@ -1,5 +1,12 @@
 export type TransactionType = 'INCOME' | 'EXPENSE';
-export type PaymentType = 'SPOT' | 'RECURRING' | 'INSTALLMENT';
+
+export enum PaymentTypeEnum {
+  SPOT = 'SPOT',
+  RECURRING = 'RECURRING',
+  INSTALLMENT = 'INSTALLMENT',
+  INSTALLMENT_PIX = 'INSTALLMENT_PIX',
+}
+export type PaymentType = `${PaymentTypeEnum}`;
 
 // Categorias específicas para Despesas (conforme GEMINI.md)
 export type ExpenseCategory = 'TITHE' | 'BILLS' | 'DEBTS' | 'INVESTMENTS' | 'STUDIES' | 'GOALS' | 'OTHER';

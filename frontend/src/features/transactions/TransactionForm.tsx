@@ -9,6 +9,7 @@ import { Button } from '../../shared/ui/Button';
 import { transactionService } from '../../shared/api/transactions';
 import { formatCurrencyInput, parseToCents } from '../../shared/utils/format';
 import type { Transaction } from '../../entities/transaction/types';
+import { PaymentTypeEnum } from '../../entities/transaction/types';
 import { InstallmentField } from './InstallmentField';
 
 const transactionSchema = z.object({
@@ -17,7 +18,7 @@ const transactionSchema = z.object({
   amount: z.string().min(1, "Amount is required"),
   type: z.enum(['INCOME', 'EXPENSE']),
   category: z.string().min(1, "Category is required"),
-  paymentType: z.enum(['SPOT', 'RECURRING', 'INSTALLMENT']),
+  paymentType: z.nativeEnum(PaymentTypeEnum),
   installmentCount: z.string().optional(),
   date: z.string().min(1, "Date is required"),
 });
@@ -85,7 +86,7 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({ onSuccess, ini
       category: data.category as any,
       paymentType: data.paymentType,
       date: new Date(data.date).toISOString(),
-      metadata: data.paymentType === 'INSTALLMENT' ? {
+      metadata: (data.paymentType === 'INSTALLMENT' || data.paymentType === 'INSTALLMENT_PIX') ? {
         totalInstallments: Number(data.installmentCount) || 1
       } : undefined
     };
@@ -156,9 +157,10 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({ onSuccess, ini
             {...register('paymentType')}
             className="flex h-12 w-full rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/20 focus-visible:border-black transition-colors"
           >
-            <option value="SPOT">À Vista</option>
-            <option value="RECURRING">Recorrente (Mensal)</option>
-            <option value="INSTALLMENT">Parcelado</option>
+            <option value={PaymentTypeEnum.SPOT}>À Vista</option>
+            <option value={PaymentTypeEnum.RECURRING}>Recorrente (Mensal)</option>
+            <option value={PaymentTypeEnum.INSTALLMENT}>Parcelado (Cartão)</option>
+            <option value={PaymentTypeEnum.INSTALLMENT_PIX}>Parcelado (PIX)</option>
           </select>
         </div>
 

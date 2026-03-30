@@ -54,8 +54,8 @@ public class TransactionService {
                 }
             }
             
-            // 3. INSTALLMENT
-            else if (t.getPaymentType() == PaymentType.INSTALLMENT) {
+            // 3. INSTALLMENT / INSTALLMENT_PIX
+            else if (t.getPaymentType() == PaymentType.INSTALLMENT || t.getPaymentType() == PaymentType.INSTALLMENT_PIX) {
                 long monthsDiff = ChronoUnit.MONTHS.between(
                     tDate.withDayOfMonth(1), 
                     startOfMonth
