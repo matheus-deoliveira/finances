@@ -43,8 +43,6 @@ public class TransactionDTO {
     @NotNull(message = "Category is required")
     private Category category;
 
-    // Metadata
-    private Integer currentInstallment;
-    private Integer totalInstallments;
-    private UUID parentId;
+    @jakarta.validation.Valid
+    private TransactionMetadataDTO metadata;
 }
