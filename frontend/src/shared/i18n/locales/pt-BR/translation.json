@@ -1,0 +1,64 @@
+{
+  "dashboard": {
+    "title": "Visão Geral",
+    "subtitle": "Gerencie suas finanças com elegância.",
+    "recentTransactions": "Últimas Transações",
+    "noTransactions": {
+      "title": "Nenhuma transação ainda",
+      "text": "Sua lista de transações está completamente vazia. Comece a rastrear seus gastos e receitas.",
+      "button": "Registrar Primeira Transação"
+    },
+    "addButton": "Adicionar"
+  },
+  "summary": {
+    "income": "Receitas",
+    "expenses": "Despesas",
+    "balance": "Saldo Total"
+  },
+  "transaction": {
+    "type": {
+      "income": "Receita",
+      "expense": "Despesa"
+    },
+    "category": {
+      "BILLS": "Contas e Contas Fixas",
+      "OTHER": "Outros/Geral",
+      "DEBTS": "Dívidas",
+      "INVESTMENTS": "Investimentos",
+      "STUDIES": "Estudos",
+      "GOALS": "Metas Pessoais",
+      "TITHE": "Dízimo",
+      "SALARY": "Salário Principal",
+      "FREELANCE": "Trabalho Extra/Freelance",
+      "INVESTMENT_RETURN": "Rendimento/Dividendos",
+      "GIFT": "Presente/Bônus"
+    },
+    "fields": {
+      "description": "Título/Descrição",
+      "observation": {
+        "label": "Observação (Opcional)",
+        "placeholder": "Ex: Compra do presente da Ana ou Detalhes da entrada..."
+      },
+      "amount": "Valor",
+      "date": "Data",
+      "category": "Categoria",
+      "save": "Salvar Transação"
+    },
+    "actions": {
+      "edit": "Editar",
+      "delete": "Excluir",
+      "viewAll": "Ver todas",
+      "editTransaction": "Editar Transação",
+      "confirmDelete": {
+        "title": "Excluir Transação?",
+        "text": "Tem certeza que deseja remover esta transação? Esta ação não pode ser desfeita.",
+        "confirm": "Sim, Excluir",
+        "cancel": "Cancelar"
+      }
+    }
+  },
+  "common": {
+    "loading": "Carregando...",
+    "error": "Ocorreu um erro"
+  }
+}

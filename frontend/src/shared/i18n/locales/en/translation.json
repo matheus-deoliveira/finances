@@ -1,0 +1,64 @@
+{
+  "dashboard": {
+    "title": "Overview",
+    "subtitle": "Manage your finances elegantly.",
+    "recentTransactions": "Recent Transactions",
+    "noTransactions": {
+      "title": "No transactions yet",
+      "text": "Your transaction list is completely empty. Start tracking your expenses and income.",
+      "button": "Record First Transaction"
+    },
+    "addButton": "Add"
+  },
+  "summary": {
+    "income": "Income",
+    "expenses": "Expenses",
+    "balance": "Total Balance"
+  },
+  "transaction": {
+    "type": {
+      "income": "Income",
+      "expense": "Expense"
+    },
+    "category": {
+      "BILLS": "Bills & Utilities",
+      "OTHER": "Other/Misc",
+      "DEBTS": "Debts",
+      "INVESTMENTS": "Investments",
+      "STUDIES": "Studies",
+      "GOALS": "Personal Goals",
+      "TITHE": "Tithe",
+      "SALARY": "Main Salary",
+      "FREELANCE": "Side Work/Freelance",
+      "INVESTMENT_RETURN": "Investment Return",
+      "GIFT": "Gift/Bonus"
+    },
+    "fields": {
+      "description": "Title/Description",
+      "observation": {
+        "label": "Observation (Optional)",
+        "placeholder": "e.g., Birthday gift for Sarah or Payment details..."
+      },
+      "amount": "Amount",
+      "date": "Date",
+      "category": "Category",
+      "save": "Save Transaction"
+    },
+    "actions": {
+      "edit": "Edit",
+      "delete": "Delete",
+      "viewAll": "View all",
+      "editTransaction": "Edit Transaction",
+      "confirmDelete": {
+        "title": "Delete Transaction?",
+        "text": "Are you sure you want to remove this transaction? This action cannot be undone.",
+        "confirm": "Yes, Delete",
+        "cancel": "Cancel"
+      }
+    }
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred"
+  }
+}

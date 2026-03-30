@@ -1,0 +1,82 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #0F0F0F;
+  --color-surface: #FAFAFA;
+  --color-income: #10B981; /* Emerald 500 */
+  --color-expense: #F43F5E; /* Rose 500 */
+  
+  --font-sans: 'Outfit', 'Satoshi', 'General Sans', system-ui, -apple-system, sans-serif;
+}
+
+@layer base {
+  :root {
+    --background: #F4F4F5;
+    --foreground: #0F0F0F;
+    --card: #FFFFFF;
+    --card-foreground: #0F0F0F;
+    --border: #E5E7EB;
+  }
+
+  /* Dark mode - optional base setup, focusing on light premium for now */
+  .dark {
+    --background: #0F0F0F;
+    --foreground: #FAFAFA;
+    --card: #18181B;
+    --card-foreground: #FAFAFA;
+    --border: #27272A;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-gray-200;
+  }
+  body {
+    @apply bg-[var(--background)] text-[var(--foreground)] antialiased min-h-screen selection:bg-black selection:text-white;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-extrabold tracking-tight;
+  }
+
+  p {
+    @apply font-medium;
+  }
+
+  /* Remove arrows from number input */
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  input[type=number] {
+    -moz-appearance: textfield;
+  }
+
+  /* Normalize Date Input appearance */
+  input[type="date"] {
+    position: relative;
+    padding-inline-start: 1rem;
+  }
+
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    background: transparent;
+    bottom: 0;
+    color: transparent;
+    cursor: pointer;
+    height: auto;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: auto;
+  }
+}
+
+@layer utilities {
+  .glass {
+    @apply bg-white/70 backdrop-blur-lg border border-white/20 shadow-[0_4px_20px_rgba(0,0,0,0.05)];
+  }
+}
