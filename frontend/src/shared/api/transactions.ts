@@ -16,6 +16,11 @@ export const transactionService = {
     return response.data;
   },
 
+  updateRecurring: async (id: string, transaction: Omit<Transaction, 'id'>) => {
+    const response = await apiClient.put<Transaction>(`/transactions/recurring/${id}`, transaction);
+    return response.data;
+  },
+
   delete: async (id: string) => {
     await apiClient.delete(`/transactions/${id}`);
   }

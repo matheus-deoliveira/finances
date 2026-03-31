@@ -48,4 +48,11 @@ public class Transaction {
     private Integer currentInstallment;
     private Integer totalInstallments;
     private UUID parentId;
+
+    // Recurrence Tracking Fields
+    @Column(name = "recurrence_id")
+    private UUID recurrenceId;
+
+    @Column(name = "end_date")
+    private LocalDate endDate;
 }

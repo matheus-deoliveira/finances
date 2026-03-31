@@ -21,6 +21,7 @@ export const TransactionList: React.FC<TransactionListProps> = ({ transactions }
   const queryClient = useQueryClient();
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
+  const [recurringUpdateCandidate, setRecurringUpdateCandidate] = useState<Transaction | null>(null);
 
   const deleteMutation = useMutation({
     mutationFn: (id: string) => transactionService.delete(id),
@@ -106,8 +107,17 @@ export const TransactionList: React.FC<TransactionListProps> = ({ transactions }
                 </span>
                 
                 <div className="flex items-center gap-2 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
-                  <button 
-                    onClick={() => setEditingTransaction(transaction)}
+                  <button
+                    onClick={() => {
+                      // For active recurring rules, trigger the confirmation modal flow.
+                      // An active rule is RECURRING and does not have an endDate.
+                      if (transaction.paymentType === PaymentTypeEnum.RECURRING && !transaction.endDate) {
+                        setRecurringUpdateCandidate(transaction);
+                      } else {
+                        // For all other types (SPOT, INSTALLMENT, or materialized recurring), edit directly.
+                        setEditingTransaction(transaction);
+                      }
+                    }}
                     className="text-xs text-gray-400 hover:text-black font-bold"
                   >
                     {t('transaction.actions.edit')}
@@ -135,6 +145,38 @@ export const TransactionList: React.FC<TransactionListProps> = ({ transactions }
           initialData={editingTransaction} 
           onSuccess={() => setEditingTransaction(null)} 
         />
+      </Modal>
+
+      <Modal
+        isOpen={!!recurringUpdateCandidate}
+        onClose={() => setRecurringUpdateCandidate(null)}
+        title="Atualizar Transação Recorrente?"
+      >
+        <div className="flex flex-col py-2">
+          <p className="text-gray-600 mb-4 leading-relaxed">
+            Você está prestes a editar uma transação recorrente. Esta ação irá:
+          </p>
+          <ul className="list-disc list-inside bg-gray-50 p-4 rounded-lg text-sm text-gray-700 mb-6">
+            <li><strong>Consolidar</strong> todo o histórico passado desta transação como registros permanentes e imutáveis.</li>
+            <li><strong>Atualizar</strong> esta e todas as <strong>futuras</strong> ocorrências com os novos dados que você inserir.</li>
+          </ul>
+          <p className="text-gray-600 mb-8 leading-relaxed">
+            Deseja continuar?
+          </p>
+          <div className="grid grid-cols-2 gap-3 w-full">
+            <Button variant="secondary" onClick={() => setRecurringUpdateCandidate(null)}>
+              Cancelar
+            </Button>
+            <Button
+              onClick={() => {
+                setEditingTransaction(recurringUpdateCandidate);
+                setRecurringUpdateCandidate(null);
+              }}
+            >
+              Sim, continuar
+            </Button>
+          </div>
+        </div>
       </Modal>
 
       <Modal 

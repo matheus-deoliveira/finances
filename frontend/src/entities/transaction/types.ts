@@ -32,4 +32,6 @@ export interface Transaction {
   paymentType: PaymentType;
   category: Category;
   metadata?: InstallmentMetadata;
+  recurrenceId?: string;
+  endDate?: string;
 }

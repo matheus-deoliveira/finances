@@ -26,8 +26,15 @@ public class TransactionController {
     @ResponseStatus(HttpStatus.CREATED)
     public TransactionDTO create(@RequestBody @Valid TransactionDTO dto) {
         Transaction transaction = mapper.toEntity(dto);
-        Transaction saved = service.save(transaction);
+        Transaction saved = service.saveNew(transaction);
         return mapper.toDTO(saved);
+    }
+
+    @PutMapping("/recurring/{id}")
+    public TransactionDTO updateRecurring(@PathVariable UUID id, @RequestBody @Valid TransactionDTO dto) {
+        Transaction transaction = mapper.toEntity(dto);
+        Transaction updated = service.updateRecurring(id, transaction);
+        return mapper.toDTO(updated);
     }
 
     @GetMapping

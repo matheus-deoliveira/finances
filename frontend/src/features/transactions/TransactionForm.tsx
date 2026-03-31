@@ -36,6 +36,11 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({ onSuccess, ini
 
   const mutation = useMutation({
     mutationFn: (payload: any) => {
+      // If we are editing an active recurring rule, we call the specific endpoint.
+      if (initialData?.id && initialData.paymentType === PaymentTypeEnum.RECURRING && !initialData.endDate) {
+        return transactionService.updateRecurring(initialData.id, payload);
+      }
+      // Otherwise, we use the create/update endpoint for SPOT, INSTALLMENT, or new transactions.
       return transactionService.create(payload);
     },
     onSuccess: () => {
@@ -49,7 +54,7 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({ onSuccess, ini
     defaultValues: {
       type: initialData?.type || 'EXPENSE',
       category: initialData?.category || 'BILLS',
-      paymentType: initialData?.paymentType || 'SPOT',
+      paymentType: initialData?.paymentType || PaymentTypeEnum.SPOT,
       installmentCount: initialData?.metadata?.totalInstallments?.toString() || '3',
       date: initialData?.date ? initialData.date.split('T')[0] : new Date().toISOString().split('T')[0],
       amount: initialData?.amount ? formatCurrencyInput(initialData.amount.toString()) : 'R$ 0,00',
@@ -74,7 +79,7 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({ onSuccess, ini
 
   const onSubmit = (data: TransactionFormData) => {
     const amountInCents = parseToCents(data.amount);
-    
+
     if (amountInCents <= 0) return;
 
     const payload = {
@@ -86,14 +91,13 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({ onSuccess, ini
       category: data.category as any,
       paymentType: data.paymentType,
       date: new Date(data.date).toISOString(),
-      metadata: (data.paymentType === 'INSTALLMENT' || data.paymentType === 'INSTALLMENT_PIX') ? {
+      metadata: (data.paymentType === PaymentTypeEnum.INSTALLMENT || data.paymentType === PaymentTypeEnum.INSTALLMENT_PIX) ? {
         totalInstallments: Number(data.installmentCount) || 1
       } : undefined
     };
 
     mutation.mutate(payload);
   };
-
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
