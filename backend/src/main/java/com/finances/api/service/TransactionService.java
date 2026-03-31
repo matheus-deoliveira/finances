@@ -87,7 +87,7 @@ public class TransactionService {
         LocalDate startOfMonth = LocalDate.of(year, month, 1);
         LocalDate endOfMonth = startOfMonth.plusMonths(1).minusDays(1);
 
-        List<Transaction> allTransactions = repository.findAll();
+        List<Transaction> allTransactions = repository.findCandidateTransactionsForMonth(startOfMonth, endOfMonth);
         List<Transaction> monthlyTransactions = new ArrayList<>();
 
         // 1. Add all non-recurring and materialized recurring transactions for the month.
