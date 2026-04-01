@@ -14,6 +14,13 @@ Function IsServerRunning(url)
     On Error GoTo 0
 End Function
 
+' Verifica se o frontend tem as dependências instaladas
+Set fso = CreateObject("Scripting.FileSystemObject")
+If Not fso.FolderExists("frontend\node_modules") Then
+    MsgBox "Dependências do frontend não encontradas! Por favor, abra um terminal na pasta 'frontend' e rode 'npm install' antes de continuar.", 16, "Erro de Dependência"
+    WScript.Quit
+End If
+
 ' Verifica se o backend já está rodando
 If Not IsServerRunning("http://localhost:8080/api/transactions") Then
     ' Se NÃO estiver rodando, inicia tudo
