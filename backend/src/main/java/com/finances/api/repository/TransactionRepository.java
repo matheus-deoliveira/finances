@@ -14,11 +14,6 @@ import java.util.UUID;
 public interface TransactionRepository extends JpaRepository<Transaction, UUID> {
 
     @Query("SELECT t FROM Transaction t WHERE " +
-           // 1. SPOT transactions within the month
-           "(t.paymentType = 'SPOT' AND t.date BETWEEN :startDate AND :endDate) OR " +
-           // 2. INSTALLMENT transactions that started on or before the end of the month
-           "(t.paymentType IN ('INSTALLMENT', 'INSTALLMENT_PIX') AND t.date <= :endDate) OR " +
-           // 3. RECURRING rules that are potentially active in the month
-           "(t.paymentType = 'RECURRING' AND t.date <= :endDate AND (t.endDate IS NULL OR t.endDate >= :startDate))")
+           "(t.date <= :endDate AND (t.endDate IS NULL OR t.endDate >= :startDate))")
     List<Transaction> findCandidateTransactionsForMonth(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 }
