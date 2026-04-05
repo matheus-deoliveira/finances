@@ -8,7 +8,6 @@ import { Card } from '../../shared/ui/Card';
 import { Modal } from '../../shared/ui/Modal';
 import { LanguageSwitcher } from '../../shared/ui/LanguageSwitcher';
 import { formatCurrency } from '../../shared/utils/format';
-import { cn } from '../../shared/utils/cn';
 import { TransactionList } from '../../features/transactions/TransactionList';
 import { TransactionForm } from '../../features/transactions/TransactionForm';
 import { LayoutGrid, Plus, ChevronLeft, ChevronRight, ChevronDown, Loader2 } from 'lucide-react';
@@ -31,11 +30,9 @@ const DashboardPage: React.FC = () => {
   });
 
   // Mark as loaded when first response arrives
-  useEffect(() => {
-    if (!isLoading) {
-      setHasLoadedInitially(true);
-    }
-  }, [isLoading]);
+  if (!isLoading && !hasLoadedInitially) {
+    setHasLoadedInitially(true);
+  }
 
   const summary = useMemo(() => {
     const income = transactions
@@ -228,7 +225,10 @@ const DashboardPage: React.FC = () => {
         </button>
 
         <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={t('dashboard.addButton')}>
-          <TransactionForm onSuccess={() => setIsModalOpen(false)} />
+          <TransactionForm 
+            onSuccess={() => setIsModalOpen(false)} 
+            defaultDate={currentDate}
+          />
         </Modal>
       </motion.div>
     </>

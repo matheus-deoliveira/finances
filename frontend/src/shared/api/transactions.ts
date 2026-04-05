@@ -11,7 +11,7 @@ export const transactionService = {
     return response.data;
   },
 
-  create: async (transaction: Omit<Transaction, 'id'>) => {
+  create: async (transaction: Omit<Transaction, 'id'> & { id?: string }) => {
     const response = await apiClient.post<Transaction>('/transactions', transaction);
     return response.data;
   },

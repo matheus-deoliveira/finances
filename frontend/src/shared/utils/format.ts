@@ -24,6 +24,7 @@ export const formatDate = (isoString: string): string => {
   const locale = i18n.language === 'pt-BR' ? 'pt-BR' : 'en-US';
   
   return new Intl.DateTimeFormat(locale, {
+    weekday: 'short',
     month: 'short',
     day: 'numeric',
     year: 'numeric'

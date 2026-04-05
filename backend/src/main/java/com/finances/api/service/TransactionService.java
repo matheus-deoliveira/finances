@@ -39,11 +39,11 @@ public class TransactionService {
         LocalDate changeDate = transactionData.getDate();
         UUID recurrenceId = originalRecurring.getRecurrenceId();
 
-        // 1. Materialize past occurrences
+        // 1. Materialize past occurrences (all months before the change month)
         YearMonth start = YearMonth.from(originalRecurring.getDate());
-        YearMonth end = YearMonth.from(changeDate);
+        YearMonth changeMonth = YearMonth.from(changeDate);
 
-        while (!start.isAfter(end.minusMonths(1))) {
+        while (start.isBefore(changeMonth)) {
             Transaction materialized = Transaction.builder()
                     .description(originalRecurring.getDescription())
                     .observation(originalRecurring.getObservation())
@@ -58,8 +58,9 @@ public class TransactionService {
             start = start.plusMonths(1);
         }
 
-        // 2. End the old recurring rule
-        originalRecurring.setEndDate(changeDate.minusDays(1));
+        // 2. End the old recurring rule at the last day of the PREVIOUS month
+        // This ensures the old rule doesn't generate any "virtual" instances in the current month
+        originalRecurring.setEndDate(changeMonth.atDay(1).minusDays(1));
         repository.save(originalRecurring);
 
         // 3. Create the new recurring rule starting from the change date
@@ -133,6 +134,9 @@ public class TransactionService {
                 }
             }
         }
+
+        // 4. Sort the list by date
+        monthlyTransactions.sort((t1, t2) -> t1.getDate().compareTo(t2.getDate()));
 
         return monthlyTransactions;
     }

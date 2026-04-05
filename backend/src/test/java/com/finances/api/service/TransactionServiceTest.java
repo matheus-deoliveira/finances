@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 class TransactionServiceTest {
@@ -47,7 +48,7 @@ class TransactionServiceTest {
                 .totalInstallments(3)
                 .build();
 
-        when(repository.findAll()).thenReturn(Arrays.asList(t));
+        when(repository.findCandidateTransactionsForMonth(any(), any())).thenReturn(Arrays.asList(t));
 
         // When
         List<Transaction> march = service.findByMonth(3, 2026);
@@ -85,7 +86,7 @@ class TransactionServiceTest {
                 .category(Category.BILLS)
                 .build();
 
-        when(repository.findAll()).thenReturn(Arrays.asList(t));
+        when(repository.findCandidateTransactionsForMonth(any(), any())).thenReturn(Arrays.asList(t));
 
         // When
         List<Transaction> march = service.findByMonth(3, 2026);

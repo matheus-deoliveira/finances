@@ -8,7 +8,7 @@ import { Input } from '../../shared/ui/Input';
 import { Button } from '../../shared/ui/Button';
 import { transactionService } from '../../shared/api/transactions';
 import { formatCurrencyInput, parseToCents } from '../../shared/utils/format';
-import type { Transaction } from '../../entities/transaction/types';
+import type { Transaction, Category } from '../../entities/transaction/types';
 import { PaymentTypeEnum } from '../../entities/transaction/types';
 import { InstallmentField } from './InstallmentField';
 
@@ -28,17 +28,25 @@ type TransactionFormData = z.infer<typeof transactionSchema>;
 interface TransactionFormProps {
   onSuccess?: () => void;
   initialData?: Transaction | null;
+  defaultDate?: Date;
 }
 
-export const TransactionForm: React.FC<TransactionFormProps> = ({ onSuccess, initialData }) => {
+const formatDateForInput = (date: Date) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
+export const TransactionForm: React.FC<TransactionFormProps> = ({ onSuccess, initialData, defaultDate }) => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
-    mutationFn: (payload: any) => {
+    mutationFn: (payload: Omit<Transaction, 'id'> & { id?: string }) => {
       // If we are editing an active recurring rule, we call the specific endpoint.
-      if (initialData?.id && initialData.paymentType === PaymentTypeEnum.RECURRING && !initialData.endDate) {
-        return transactionService.updateRecurring(initialData.id, payload);
+      if (payload.id && initialData?.paymentType === PaymentTypeEnum.RECURRING && !initialData.endDate) {
+        return transactionService.updateRecurring(payload.id, payload);
       }
       // Otherwise, we use the create/update endpoint for SPOT, INSTALLMENT, or new transactions.
       return transactionService.create(payload);
@@ -56,7 +64,9 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({ onSuccess, ini
       category: initialData?.category || 'BILLS',
       paymentType: initialData?.paymentType || PaymentTypeEnum.SPOT,
       installmentCount: initialData?.metadata?.totalInstallments?.toString() || '3',
-      date: initialData?.date ? initialData.date.split('T')[0] : new Date().toISOString().split('T')[0],
+      date: initialData?.date 
+        ? initialData.date.split('T')[0] 
+        : formatDateForInput(defaultDate || new Date()),
       amount: initialData?.amount ? formatCurrencyInput(initialData.amount.toString()) : 'R$ 0,00',
       description: initialData?.description || '',
       observation: initialData?.observation || ''
@@ -88,7 +98,7 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({ onSuccess, ini
       observation: data.observation,
       amount: amountInCents,
       type: data.type,
-      category: data.category as any,
+      category: data.category as Category,
       paymentType: data.paymentType,
       date: new Date(data.date).toISOString(),
       metadata: (data.paymentType === PaymentTypeEnum.INSTALLMENT || data.paymentType === PaymentTypeEnum.INSTALLMENT_PIX) ? {
